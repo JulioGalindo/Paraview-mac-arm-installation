@@ -1,76 +1,53 @@
-```markdown
-# ParaView Compilation and Setup Guide
+ParaView Compilation and Setup Guide
 
-## Introduction
-This guide outlines the steps to compile and set up ParaView on macOS ARM64 (M1, M2, M3, M4). It also provides instructions on ensuring that the plugins and icon are correctly handled, and that everything works properly when the app is run from `/Applications`.
+Introduction
+This guide outlines the steps to compile and set up ParaView on macOS ARM64 (M1, M2, M3, M4). It also provides instructions on ensuring that the plugins and icon are correctly handled, and that everything works properly when the app is run from /Applications.
 
-**Important Notes**:
-- `/julio/` refers to your username, and you should replace it with your actual username where applicable.
-- This guide assumes you're compiling and testing ParaView from a non-system directory, using `~/work/paraview` and `~/work/paraview-build`.
+Important Notes:
 
-## Prerequisites
+/julio/ refers to your username, and you should replace it with your actual username where applicable.
+This guide assumes you're compiling and testing ParaView from a non-system directory, using ~/work/paraview and ~/work/paraview-build.
+Prerequisites
 Before starting the compilation, ensure the following are installed:
 
-- [Homebrew](https://brew.sh/)
-- [CMake](https://cmake.org/install/)
-- [Qt5](https://www.qt.io/)
-- [pyenv](https://github.com/pyenv/pyenv)
-
-### Verifying Dependencies
+Homebrew
+CMake
+Qt5
+pyenv
+Verifying Dependencies
 Run the following command to check if the necessary dependencies are already installed:
 
-```bash
+bash
+Copiar
 brew list | grep -E 'cmake|qt@5|mpich|boost|python@3'
-```
+Installation Instructions:
 
-If they are not installed, use the following commands to install them:
-
-```bash
-brew install cmake qt@5 mpich boost python@3
-```
-
-### Verify Installed Versions
-
-Ensure the versions are correct:
-
-```bash
-cmake --version
-mpicc --version
-```
-
-### Python Setup
-Make sure Python 3.13.1 is installed using `pyenv`:
-
-```bash
-pyenv versions
+Step 1: Install Necessary Dependencies
+bash
+Copiar
+brew install cmake ninja qt@5 mpich boost python@3
+Step 2: Set Up Python (if not already set)
+bash
+Copiar
+pyenv install 3.13.1
 pyenv global 3.13.1
-```
+Step 3: Clone ParaView Source
+Clone the ParaView repository from GitHub:
 
-## Compilation Steps
+bash
+Copiar
+cd ~/work
+git clone --recursive https://gitlab.kitware.com/paraview/paraview.git
+Step 4: Build the Application
+Create the build directory and run CMake:
 
-### 1. Clone ParaView Repository
-
-Clone the ParaView repository to a new folder (e.g., `~/work/paraview`):
-
-```bash
-git clone --recursive https://gitlab.kitware.com/paraview/paraview.git ~/work/paraview
-```
-
-### 2. Create a Build Directory
-
-Create a separate directory for the build to avoid any conflicts:
-
-```bash
+bash
+Copiar
 mkdir ~/work/paraview-build
 cd ~/work/paraview-build
-```
 
-### 3. Configure ParaView with CMake
-
-Run the following CMake command to configure the build, replacing `/julio/` with your actual username:
-
-```bash
 cmake \
+  -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=/Applications/ParaView.app/Contents \
   -DQt5_DIR=/opt/homebrew/opt/qt@5/lib/cmake/Qt5 \
@@ -85,69 +62,19 @@ cmake \
   -DPYTHON_LIBRARY=/Users/julio/.pyenv/versions/3.13.1/lib/libpython3.13.dylib \
   -DCMAKE_PREFIX_PATH=/Applications/ParaView.app/Contents/Frameworks \
   -DCMAKE_LIBRARY_PATH=/Applications/ParaView.app/Contents/Frameworks/lib \
-  -DPARAVIEW_PLUGIN_PATH=/Applications/ParaView.app/Contents/MacOS/plugins \
-  ~/work/paraview
-```
-
-### 4. Compile ParaView
-
-Once CMake has finished configuring, compile ParaView using `cmake`:
-
-```bash
+  ../paraview
+Step 5: Install ParaView
+bash
+Copiar
 cmake --build . --target install
-```
+Step 6: Handle Plugins
+Once ParaView is compiled and installed, make sure to move any required plugins from /Users/julio/work/paraview-build/lib/paraview-5.13/plugins/ to /Applications/ParaView.app/Contents/lib/paraview-5.13/plugins/.
 
-### 5. Install ParaView
+Step 7: Add Icon
+To ensure the icon is correctly displayed, you can manually add the icon (pvIcon.icns) to the /Applications/ParaView.app/Contents/Resources/ directory. You can use Finder to copy the icon into this directory.
 
-After the compilation completes successfully, install ParaView:
+Post-Installation Instructions
 
-```bash
-sudo cmake --install .
-```
-
-### 6. Verifying Installation
-
-To verify the installation, check the following:
-
-1. Run the application from the terminal:
-
-    ```bash
-    open /Applications/ParaView.app
-    ```
-
-2. Verify that all required plugins are correctly placed inside the application bundle:
-
-    ```bash
-    ls /Applications/ParaView.app/Contents/MacOS/plugins
-    ```
-
-    **Note:** The plugins will initially appear in `/Users/julio/work/paraview-build/lib/paraview-5.13/plugins/ArrowGlyph/ArrowGlyph.so`, but they should be correctly placed inside the application in `/Applications/ParaView.app/Contents/lib/paraview-5.13/plugins/`.
-
-### 7. Verifying Python Integration
-
-To ensure ParaView is integrated with Python, open Python and verify that the ParaView module is available:
-
-```bash
-python3
->>> from paraview.simple import *
->>> print(paraview.__version__)
-```
-
-### 8. Icon Handling
-
-To ensure the correct icon appears, follow these steps:
-
-1. Place the icon (`pvIcon.icns`) inside the `Resources` folder of ParaView's `.app`:
-
-    ```bash
-    cp /path/to/your/icon/pvIcon.icns ~/work/paraview-build/bin/paraview.app/Contents/Resources/
-    ```
-
-2. Use Finder to right-click on the application, go to "Get Info", click the small icon at the top, and paste your custom icon.
-
-## Conclusion
-
-You should now have ParaView properly installed and running from `/Applications/ParaView.app`. Ensure that all the plugins are correctly installed and the icon is set. If you run into any further issues, check the system logs or the application's error messages for more information.
-
-Happy computing!
-```
+Open ParaView from /Applications/ParaView.app.
+Make sure plugins are recognized correctly from the /Applications/ParaView.app/Contents/lib/paraview-5.13/plugins/ directory.
+If the application icon does not display correctly in the Dock, follow the steps to manually update the icon as detailed in previous sections.
