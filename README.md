@@ -1,25 +1,26 @@
-ParaView Compilation and Setup Guide
+# ParaView Compilation and Setup Guide
 
-Introduction
-This guide outlines the steps to compile and set up ParaView on macOS ARM64 (M1, M2, M3, M4). It also provides instructions on ensuring that the plugins and icon are correctly handled, and that everything works properly when the app is run from /Applications.
+## Introduction
+This guide outlines the steps to compile and set up ParaView on macOS ARM64 (M1, M2, M3, M4). It also provides instructions on ensuring that the plugins and icon are correctly handled, and that everything works properly when the app is run from `/Applications`.
 
-Important Notes:
+**Important Notes:**
+- `/julio/` refers to your username, and you should replace it with your actual username where applicable.
+- This guide assumes you're compiling and testing ParaView from a non-system directory, using `~/work/paraview` and `~/work/paraview-build`.
 
-/julio/ refers to your username, and you should replace it with your actual username where applicable.
-This guide assumes you're compiling and testing ParaView from a non-system directory, using ~/work/paraview and ~/work/paraview-build.
-Prerequisites
+## Prerequisites
 Before starting the compilation, ensure the following are installed:
 
-Homebrew
-CMake
-Qt5
-pyenv
-Verifying Dependencies
+- [Homebrew](https://brew.sh/)
+- [CMake](https://cmake.org/install/)
+- [Qt5](https://www.qt.io/)
+- [pyenv](https://github.com/pyenv/pyenv)
+
+### Verifying Dependencies
 Run the following command to check if the necessary dependencies are already installed:
 
-bash
-Copiar
+```bash
 brew list | grep -E 'cmake|qt@5|mpich|boost|python@3'
+
 Installation Instructions:
 
 Step 1: Install Necessary Dependencies
@@ -78,3 +79,6 @@ Post-Installation Instructions
 Open ParaView from /Applications/ParaView.app.
 Make sure plugins are recognized correctly from the /Applications/ParaView.app/Contents/lib/paraview-5.13/plugins/ directory.
 If the application icon does not display correctly in the Dock, follow the steps to manually update the icon as detailed in previous sections.
+Troubleshooting
+
+If any issues arise with missing dependencies, environment variables, or missing components, refer to the troubleshooting steps, ensure all paths are set correctly, and check that the necessary dependencies were installed properly.
